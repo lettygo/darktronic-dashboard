@@ -105,7 +105,7 @@ export default function Home() {
 
         {/* Hero Section */}
         <section className="relative h-[340px] overflow-hidden">
-          <img src={HERO_IMG} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" />
+          <img src={HERO_IMG} alt="Painel de comando futurista com gráficos e dados de análise de mercado de eletrônicos" className="absolute inset-0 w-full h-full object-cover opacity-40" />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(10,14,26,0.6)] to-background" />
           <div className="relative z-10 flex flex-col justify-end h-full px-6 pb-8 max-w-5xl">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
