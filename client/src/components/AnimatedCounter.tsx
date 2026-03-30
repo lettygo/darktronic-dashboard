@@ -7,6 +7,7 @@ interface AnimatedCounterProps {
   suffix?: string;
   decimals?: number;
   className?: string;
+  locale?: string;
 }
 
 export function AnimatedCounter({
@@ -16,6 +17,7 @@ export function AnimatedCounter({
   suffix = "",
   decimals = 0,
   className = "",
+  locale = "pt-BR",
 }: AnimatedCounterProps) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
@@ -30,6 +32,7 @@ export function AnimatedCounter({
           const animate = (currentTime: number) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
+            // Cubic ease-out for smooth animation
             const eased = 1 - Math.pow(1 - progress, 3);
             setCount(eased * end);
             if (progress < 1) {
@@ -45,9 +48,23 @@ export function AnimatedCounter({
     return () => observer.disconnect();
   }, [end, duration]);
 
+  // Format number with locale-specific formatting
+  const formatted = count.toLocaleString(locale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+
   return (
-    <span ref={ref} className={className} style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-      {prefix}{count.toFixed(decimals)}{suffix}
+    <span 
+      ref={ref} 
+      className={`font-data ${className}`}
+      style={{ 
+        fontFamily: "'JetBrains Mono', monospace",
+        fontWeight: 600,
+        letterSpacing: "0.02em",
+      }}
+    >
+      {prefix}{formatted}{suffix}
     </span>
   );
 }
