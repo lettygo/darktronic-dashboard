@@ -5,8 +5,8 @@
  * Layout: Sidebar fixa + grid assimétrico de painéis
  */
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { Layout } from "@/components/Layout";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { GlowCard } from "@/components/GlowCard";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -21,7 +21,19 @@ import {
   ZAxis, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 
-const NAV_ITEMS = [
+
+
+const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/hero-command-center-NNVxchPaToGjskaCRTm9UY.webp";
+const LOGO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/darktronic-logo-glow-gr4JhEAU6yPLDfSJ8NHnH8.webp";
+const MARKET_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/market-analysis-illustration-fWnRxbvLbetAKFtB8zD5y5.webp";
+const SWOT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/swot-strategic-bg-Kv5i2SiG24sUZRUmncw9BA.webp";
+
+
+function scrollTo(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+const NAV_ITEMS_INTERNAL = [
   { id: "overview", label: "Panorama", icon: "◈" },
   { id: "ranking", label: "Ranking", icon: "▦" },
   { id: "engagement", label: "Engajamento", icon: "◉" },
@@ -33,16 +45,6 @@ const NAV_ITEMS = [
   { id: "plan", label: "Plano", icon: "▸" },
   { id: "benchmarks", label: "Metas", icon: "◆" },
 ];
-
-const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/hero-command-center-NNVxchPaToGjskaCRTm9UY.webp";
-const LOGO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/darktronic-logo-glow-gr4JhEAU6yPLDfSJ8NHnH8.webp";
-const MARKET_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/market-analysis-illustration-fWnRxbvLbetAKFtB8zD5y5.webp";
-const SWOT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/swot-strategic-bg-Kv5i2SiG24sUZRUmncw9BA.webp";
-const BG_PATTERN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663489219567/nt7GjkWbgNDw6LSHQ2Ws8d/analytics-bg-pattern-ab3PBG9ZFe3F7sLGETdvaz.webp";
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
 
 // Custom tooltip for charts
 function CustomTooltip({ active, payload, label }: any) {
@@ -60,8 +62,6 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export default function Home() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const visitData = COMPETITORS.map((c) => ({
     name: c.name.length > 12 ? c.name.slice(0, 10) + "…" : c.name,
     fullName: c.name,
@@ -85,61 +85,24 @@ export default function Home() {
   }));
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative">
-      {/* Background pattern */}
-      <div
-        className="fixed inset-0 opacity-30 pointer-events-none z-0"
-        style={{ backgroundImage: `url(${BG_PATTERN})`, backgroundSize: "cover", backgroundPosition: "center" }}
-      />
-      <div className="fixed inset-0 grid-bg pointer-events-none z-0 opacity-50" />
+    <Layout>
+      <div>
+        {/* Sub-nav para seções internas */}
+        <div className="sticky top-0 z-20 bg-[rgba(8,12,24,0.9)] backdrop-blur-md border-b border-[rgba(0,229,255,0.08)] px-4 py-2 overflow-x-auto">
+          <div className="flex gap-1 min-w-max">
+            {NAV_ITEMS_INTERNAL.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-[#7A8A9A] hover:text-[#00E5FF] hover:bg-[rgba(0,229,255,0.05)] transition-all whitespace-nowrap"
+              >
+                <span className="opacity-60">{item.icon}</span>
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      {/* Mobile sidebar toggle */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden rounded-md border border-[rgba(0,229,255,0.3)] bg-[rgba(10,14,26,0.9)] p-2 text-[#00E5FF]"
-      >
-        {sidebarOpen ? "✕" : "☰"}
-      </button>
-
-      {/* Sidebar */}
-      <AnimatePresence>
-        {(sidebarOpen || true) && (
-          <motion.aside
-            initial={{ x: -240 }}
-            animate={{ x: 0 }}
-            className={`fixed left-0 top-0 z-40 h-full w-56 border-r border-[rgba(0,229,255,0.1)] bg-[rgba(8,12,24,0.95)] backdrop-blur-md flex-col py-6 px-3 ${sidebarOpen ? "flex" : "hidden lg:flex"}`}
-          >
-            <div className="flex items-center gap-2 px-2 mb-8">
-              <img src={LOGO_IMG} alt="Darktronic" className="w-9 h-9 object-contain" />
-              <div>
-                <h1 className="text-sm font-bold text-[#00E5FF] tracking-wide" style={{ fontFamily: "'Space Grotesk'" }}>DARKTRONIC</h1>
-                <p className="text-[10px] text-[#5A7A8A] tracking-widest uppercase">Painel Estratégico</p>
-              </div>
-            </div>
-
-            <nav className="flex-1 space-y-1">
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => { scrollTo(item.id); setSidebarOpen(false); }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-[#8899AA] hover:text-[#00E5FF] hover:bg-[rgba(0,229,255,0.05)] transition-all duration-200 text-left"
-                >
-                  <span className="text-xs opacity-60">{item.icon}</span>
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-
-            <div className="mt-auto px-2 pt-4 border-t border-[rgba(0,229,255,0.08)]">
-              <p className="text-[10px] text-[#4A5A6A]">Dados: Jan–Mar 2026</p>
-              <p className="text-[10px] text-[#4A5A6A]">Fontes: SimilarWeb, Semrush</p>
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
-
-      {/* Main content */}
-      <main className="lg:ml-56 relative z-10">
         {/* Hero Section */}
         <section className="relative h-[340px] overflow-hidden">
           <img src={HERO_IMG} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" />
@@ -594,7 +557,7 @@ export default function Home() {
             <p className="text-[10px] text-[#3A4A5A]">Este painel é atualizado conforme novas pesquisas são adicionadas ao projeto.</p>
           </footer>
         </div>
-      </main>
-    </div>
+      </div>
+    </Layout>
   );
 }
